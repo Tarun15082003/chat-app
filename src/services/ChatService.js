@@ -14,9 +14,13 @@ let chats = [
     _id: "617a077e18c25468bc7c4dd4",
     chatName: "John Doe",
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "12:34" },
-      { message: "hello", isSender: false, timestamp: "12:34" },
-      { message: "how are you?", isSender: true, timestamp: "12:34" },
+      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
+      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
+      {
+        message: "how are you?",
+        isSender: true,
+        timestamp: "2023-11-20 12:34",
+      },
     ],
   },
   {
@@ -34,8 +38,8 @@ let chats = [
     _id: "617a077e18c25468b27c4dd4",
     chatName: "Guest User",
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "12:34" },
-      { message: "hello", isSender: false, timestamp: "12:34" },
+      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
+      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
     ],
   },
   {
@@ -53,8 +57,8 @@ let chats = [
     _id: "617a077e18c2d468bc7c4dd4",
     chatName: "Anthony",
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "12:34" },
-      { message: "hello", isSender: false, timestamp: "12:34" },
+      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
+      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
     ],
   },
   {
@@ -80,8 +84,8 @@ let chats = [
       email: "guest@example.com",
     },
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "12:34" },
-      { message: "hello", isSender: false, timestamp: "12:34" },
+      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
+      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
     ],
   },
   {
@@ -99,8 +103,8 @@ let chats = [
     _id: "617a077e18c25468bc7cfdd4",
     chatName: "Jane Doe",
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "12:34" },
-      { message: "hello", isSender: false, timestamp: "12:34" },
+      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
+      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
     ],
   },
   {
@@ -126,8 +130,8 @@ let chats = [
       email: "guest@example.com",
     },
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "12:34" },
-      { message: "hello", isSender: false, timestamp: "12:34" },
+      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
+      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
     ],
   },
 ];

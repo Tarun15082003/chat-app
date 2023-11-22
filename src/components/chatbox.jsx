@@ -17,9 +17,13 @@ class ChatBox extends Component {
           onKeyDown={(e) => handleKeyDown(e)}
         />
         <div className="input-group-prepend">
-          <span className="input-group-text btn" onClick={onSubmit}>
+          <button
+            className="input-group-text btn"
+            onClick={onSubmit}
+            disabled={value === "" ? true : false}
+          >
             <i className="fa fa-paper-plane" aria-hidden="true"></i>
-          </span>
+          </button>
         </div>
       </div>
     );
