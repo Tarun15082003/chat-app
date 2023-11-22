@@ -19,17 +19,7 @@ class MoreButton extends Component {
         <ul className="dropdown-menu dropdown-menu-right">
           <li>
             <a className="dropdown-item" href="#">
-              Action
-            </a>
-          </li>
-          <li>
-            <a className="dropdown-item" href="#">
-              Another action
-            </a>
-          </li>
-          <li>
-            <a className="dropdown-item" href="#">
-              Something else here
+              Export Chat as Text
             </a>
           </li>
         </ul>

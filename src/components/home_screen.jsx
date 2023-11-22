@@ -47,14 +47,40 @@ class HomeScreen extends Component {
 
   handleSubmit = () => {
     const old_messages = [...this.state.old_messages];
-    old_messages.push(this.state.message);
+
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1; // Note: Months are zero-based
+    const day = currentDate.getDate();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+
+    const current_message = {
+      message: this.state.message,
+      isSender: true,
+      timestamp: `${day}-${month}-${year} ${hours}:${minutes}`,
+    };
+    old_messages.push(current_message);
     this.setState({ message: "", old_messages });
   };
 
   handleKeyDown = (event) => {
     if (event.key === "Enter") {
       const old_messages = [...this.state.old_messages];
-      old_messages.push(this.state.message);
+
+      const currentDate = new Date();
+      const year = currentDate.getFullYear();
+      const month = currentDate.getMonth() + 1; // Note: Months are zero-based
+      const day = currentDate.getDate();
+      const hours = currentDate.getHours();
+      const minutes = currentDate.getMinutes();
+
+      const current_message = {
+        message: this.state.message,
+        isSender: true,
+        timestamp: `${day}-${month}-${year} ${hours}:${minutes}`,
+      };
+      old_messages.push(current_message);
       this.setState({ message: "", old_messages });
     }
   };
