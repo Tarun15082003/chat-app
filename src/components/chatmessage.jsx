@@ -1,9 +1,12 @@
 import React from "react";
 
-const ChatMessage = ({ message, isSender, timestamp }) => {
+const ChatMessage = ({ message, isSender, timestamp, user }) => {
+  const issender = isSender === user._id;
   return (
-    <div className={`chat-message ${isSender ? "sender" : "receiver"}`}>
-      {!isSender && (
+    <div
+      className={`chat-message ${issender === true ? "sender" : "receiver"}`}
+    >
+      {!issender && (
         <div className="col-md-auto text-center">
           <img
             className="profile-image-in-chat bg-secondary"
@@ -16,13 +19,13 @@ const ChatMessage = ({ message, isSender, timestamp }) => {
       <div className="message-container">
         <div
           className={`message ${
-            isSender ? "sender-message" : "receiver-message"
+            issender ? "sender-message" : "receiver-message"
           }`}
         >
           {message}
         </div>
       </div>
-      {isSender && (
+      {issender && (
         <div className="col-md-auto text-center">
           <img
             className="profile-image-in-chat bg-primary"

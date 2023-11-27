@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Joi from "joi-browser";
 import Input from "./input";
 import Select from "./select";
+import ToogleButton from "./ToogleButton";
 
 class Form extends Component {
   state = {
@@ -37,6 +38,13 @@ class Form extends Component {
     this.doSubmit();
   };
 
+  handleToogle = (e) => {
+    const data = { ...this.state.data };
+    const value = !data[e.currentTarget.name];
+    data[e.currentTarget.name] = value;
+    this.setState({ data });
+  };
+
   handleChange = (e) => {
     const errors = { ...this.state.errors };
     const errorMessage = this.validateProperty(e.currentTarget);
@@ -55,8 +63,6 @@ class Form extends Component {
       </button>
     );
   }
-
-  toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
   renderInput(name, label, type = "text") {
     return (
@@ -81,6 +87,18 @@ class Form extends Component {
         options={options}
         onChange={this.handleChange}
         error={errors[name]}
+      />
+    );
+  }
+
+  renderToogle(name, label) {
+    const { data } = this.state;
+    return (
+      <ToogleButton
+        name={name}
+        value={data[name]}
+        label={label}
+        onClick={this.handleToogle}
       />
     );
   }

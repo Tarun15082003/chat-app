@@ -1,9 +1,11 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
 class VideoButton extends Component {
   render() {
     return (
-      <button
+      <Link
+        to={`/chats/videocall/${this.props.data._id}`}
         className="col btn"
         style={{
           textAlign: "center",
@@ -13,7 +15,7 @@ class VideoButton extends Component {
         }}
       >
         <i className="fa fa-video-camera" aria-hidden="true"></i>
-      </button>
+      </Link>
     );
   }
 }
