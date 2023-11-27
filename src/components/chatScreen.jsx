@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import ChatScreenItem from "./chatScreenChatitem";
-import { getChat } from "../services/ChatService";
 import ChatBox from "./chatbox";
 import VideoButton from "./video_button";
 import MoreButton from "./more_button";
@@ -8,23 +7,27 @@ import DisplayMessages from "./displaymessages";
 
 class ChatScreen extends Component {
   render() {
-    const { data: id } = this.props;
-    const item = getChat(id);
     return (
       <div>
         <div className="row chat-heading">
           <div className="col">
-            <ChatScreenItem data={item} />
+            <ChatScreenItem data={this.props.currentChat} />
           </div>
           <div className="col-2 col-md-auto">
             <div className="row">
-              <VideoButton />
+              <VideoButton
+                socket={this.props.socket}
+                data={this.props.currentChat}
+              />
               <MoreButton />
             </div>
           </div>
         </div>
         <div className="chat-messages">
-          <DisplayMessages old_messages={this.props.old_messages} />
+          <DisplayMessages
+            old_messages={this.props.old_messages}
+            user={this.props.user}
+          />
         </div>
         <div className="row chat-col-1-row-3">
           <ChatBox

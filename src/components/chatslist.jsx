@@ -7,15 +7,19 @@ class Chatslist extends Component {
     const { items, onClick } = this.props;
     return (
       <div className="chat-list">
-        {items.map((item) => (
-          <Link
-            to={`/chats/${item._id}`}
-            key={item._id}
-            style={{ color: "black", textDecoration: "none" }}
-          >
-            <ChatItem data={item} onClick={onClick} />
-          </Link>
-        ))}
+        {items.length === 0 ? (
+          <h6>No Chats</h6>
+        ) : (
+          items.map((item) => (
+            <Link
+              to={`/chats/${item._id}`}
+              key={item._id}
+              style={{ color: "black", textDecoration: "none" }}
+            >
+              <ChatItem data={item} onClick={onClick} key={item._id} />
+            </Link>
+          ))
+        )}
       </div>
     );
   }

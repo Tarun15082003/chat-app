@@ -1,3 +1,8 @@
+import { apiUrl } from "../config.json";
+import http from "./httpService";
+
+const apiEndpoint = apiUrl + "/chats";
+
 let chats = [
   {
     isGroupChat: false,
@@ -14,8 +19,8 @@ let chats = [
     _id: "617a077e18c25468bc7c4dd4",
     chatName: "John Doe",
     old_messages: [
-      { message: "hi", isSender: true, timestamp: "2023-11-20 12:34" },
-      { message: "hello", isSender: false, timestamp: "2023-11-20 12:34" },
+      { message: "hi", isSender: true, timestamp: "20-11-2023 12:34" },
+      { message: "hello", isSender: false, timestamp: "20-11-2023 12:34" },
       {
         message: "how are you?",
         isSender: true,
@@ -136,15 +141,18 @@ let chats = [
   },
 ];
 
-export function getChats() {
-  return chats;
+export function getChats(userId) {
+  return http.get(apiEndpoint + "/" + userId);
 }
 
 export function getChat(id) {
-  return chats.find((m) => m._id === id);
+  return http.get(apiEndpoint + "/messages/" + id);
 }
 
 export function getMessages(id) {
-  const chat = chats.find((m) => m._id === id);
-  return chat.old_messages;
+  return http.get(apiEndpoint + "/messages/" + id);
+}
+
+export function updateMessages(id, body) {
+  return http.put(apiEndpoint + "/messages/" + id, body);
 }
