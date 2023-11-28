@@ -11,14 +11,15 @@ class ChatScreen extends Component {
       <div>
         <div className="row chat-heading">
           <div className="col">
-            <ChatScreenItem data={this.props.currentChat} />
+            <ChatScreenItem
+              data={this.props.currentChat}
+              loggedInUsers={this.props.loggedInUsers}
+              user={this.props.user}
+            />
           </div>
           <div className="col-2 col-md-auto">
             <div className="row">
-              <VideoButton
-                socket={this.props.socket}
-                data={this.props.currentChat}
-              />
+              <VideoButton data={this.props.currentChat} />
               <MoreButton />
             </div>
           </div>
