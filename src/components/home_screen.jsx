@@ -9,6 +9,7 @@ import ChatScreen from "./chatScreen";
 import UserScreen from "./userprofile";
 import AddChatScreen from "./addchatscreen";
 import * as authService from "../services/authService";
+import { logout } from "./../services/authService";
 
 class HomeScreen extends Component {
   state = {
@@ -26,6 +27,9 @@ class HomeScreen extends Component {
     const user = authService.getCurrentUser();
     this.socket = io("http://localhost:3000");
 
+    const userId = user._id;
+    this.socket.emit("loggedIn", userId);
+
     this.socket.on("newMessage", ({ chatId, message }) => {
       if (chatId === this.state.id) {
         this.setState((prevState) => ({
@@ -33,6 +37,10 @@ class HomeScreen extends Component {
           message: "",
         }));
       }
+    });
+
+    this.socket.on("loggedInUsers", (data) => {
+      this.setState({ loggedInUsers: data });
     });
 
     const id = this.props.match.params.id;
@@ -45,8 +53,22 @@ class HomeScreen extends Component {
       currentChat = chat;
       this.socket.emit("joinRoom", id);
     }
+    this.notifyUser();
     this.setState({ chats, id, old_messages, user, currentChat });
   }
+
+  handleLogout = () => {
+    const logout = () => {
+      return new Promise((resolve) => {
+        this.socket.emit("logout", { userId: this.state.user._id });
+        resolve();
+      });
+    };
+    logout().then(() => {
+      authService.logout();
+      window.location = "/";
+    });
+  };
 
   handleDisplayBit = () => {
     const displaybit = 1;
@@ -138,6 +160,18 @@ class HomeScreen extends Component {
     }
   };
 
+  notifyUser = async (notificationText) => {
+    if (Notification.permission === "denied") {
+      await Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+          const notification = new Notification("Permission granted");
+        }
+      });
+    } else if (Notification.permission === "granted") {
+      const notification = new Notification(notificationText);
+    }
+  };
+
   getFilteredData = () => {
     let filtered = this.state.chats;
     if (this.state.searchQuery) {
@@ -169,7 +203,7 @@ class HomeScreen extends Component {
                   <Profile handleDisplayBit={this.handleDisplayBit} />
                 </div>
                 <div className="logout">
-                  <Logout />
+                  <Logout onClick={this.handleLogout} />
                 </div>
               </div>
               <SearchBox
@@ -201,7 +235,7 @@ class HomeScreen extends Component {
                 handleKeyDown={this.handleKeyDown}
                 currentChat={this.state.currentChat}
                 user={this.state.user}
-                socket={this.socket}
+                loggedInUsers={this.state.loggedInUsers}
               />
             )}
           </div>

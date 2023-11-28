@@ -2,7 +2,16 @@ import React, { Component } from "react";
 
 class ChatScreenItem extends Component {
   render() {
-    const { data: item } = this.props;
+    const { data: item, loggedInUsers, user } = this.props;
+    let displaystate = null;
+    if (item.users.length === 2 && loggedInUsers) {
+      const { _id: userId } = item.users.find((u) => u._id !== user._id);
+      if (Object.keys(loggedInUsers).includes(userId)) {
+        displaystate = "User Online";
+      } else {
+        displaystate = "User offline";
+      }
+    }
     return (
       <div className="row" style={{ marginTop: "2px" }}>
         <div className="col-1">
@@ -14,6 +23,17 @@ class ChatScreenItem extends Component {
         </div>
         <div className="col" style={{ paddingLeft: "20px", paddingTop: "5px" }}>
           {item.chatName}
+          <div
+            className="last-message"
+            style={{
+              width: "100px",
+              overflowX: "auto",
+              fontSize: "0.8rem",
+              fontStyle: "italic",
+            }}
+          >
+            {displaystate}
+          </div>
         </div>
       </div>
     );

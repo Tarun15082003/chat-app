@@ -16,7 +16,20 @@ class ChatItem extends Component {
             alt="avatar"
           />
         </div>
-        <div className="col-md-auto">{item.chatName}</div>
+        <div className="col-md-auto">
+          {item.chatName}
+          <div
+            className="last-message"
+            style={{
+              width: "100px",
+              overflowX: "auto",
+              fontSize: "0.8rem",
+              fontStyle: "italic",
+            }}
+          >
+            {item.old_messages[item.old_messages.length - 1].message}
+          </div>
+        </div>
       </div>
     );
   }
