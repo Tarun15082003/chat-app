@@ -17,6 +17,7 @@ class VideoScreen extends Component {
       callAccepted: false,
       users_ids: [],
       current_user: null,
+      users_logged_in: {},
     };
 
     this.userVideo = React.createRef();
@@ -33,6 +34,10 @@ class VideoScreen extends Component {
 
     this.socket.on("allUsers", (data) => {
       this.setState({ users: data, yourID: data[this.props.user._id] });
+    });
+
+    this.socket.on("loggedInUsers", (data) => {
+      this.setState({ users_logged_in: data });
     });
 
     this.socket.on("hey", (data) => {
@@ -70,6 +75,14 @@ class VideoScreen extends Component {
       });
     this.setState({ users_ids, current_user: this.props.user });
   }
+
+  onRequest = (item) => {
+    this.socket.emit("RequestVideoCall", {
+      user: item,
+      current_user: this.props.user,
+      chatId: this.props.match.params.id,
+    });
+  };
 
   callPeer = (key, item) => {
     this.setState({ otherUser: item });
@@ -155,6 +168,7 @@ class VideoScreen extends Component {
       receivingCall,
       caller,
       users_ids,
+      users_logged_in,
     } = this.state;
 
     let UserVideo;
@@ -234,6 +248,8 @@ class VideoScreen extends Component {
                     key={item._id}
                     users={users}
                     onClick={this.callPeer}
+                    onRequest={this.onRequest}
+                    users_logged_in={users_logged_in}
                   />
                 ) : null
               )}

@@ -43,6 +43,18 @@ class HomeScreen extends Component {
       this.setState({ loggedInUsers: data });
     });
 
+    this.socket.on("newMessageReceived", ({ message, chat }) => {
+      this.notifyUser(message, chat);
+    });
+
+    this.socket.on("RequestingVideoCall", ({ current_user, chatId }) => {
+      const notification = new Notification(
+        `Video call from ${current_user.name}`
+      );
+      notification.onclick = () =>
+        window.open(`http://localhost:3001/chats/videocall/${chatId}`);
+    });
+
     const id = this.props.match.params.id;
     const { data: chats } = await getChats(user._id);
     let old_messages = [];
@@ -53,7 +65,6 @@ class HomeScreen extends Component {
       currentChat = chat;
       this.socket.emit("joinRoom", id);
     }
-    this.notifyUser();
     this.setState({ chats, id, old_messages, user, currentChat });
   }
 
@@ -138,7 +149,13 @@ class HomeScreen extends Component {
       isSender: this.state.user._id,
       timestamp: `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`,
     };
-    await updateMessages(this.state.id, current_message);
+    updateMessages(this.state.id, current_message).then(() => {
+      this.socket.emit("messageSent", {
+        chat: this.state.currentChat,
+        user: this.state.user,
+        message: current_message.message,
+      });
+    });
   };
 
   handleKeyDown = async (event) => {
@@ -156,19 +173,37 @@ class HomeScreen extends Component {
         isSender: this.state.user._id,
         timestamp: `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`,
       };
-      await updateMessages(this.state.id, current_message);
+      updateMessages(this.state.id, current_message).then(() => {
+        this.socket.emit("messageSent", {
+          chat: this.state.currentChat,
+          user: this.state.user,
+          message: current_message.message,
+        });
+      });
     }
   };
 
-  notifyUser = async (notificationText) => {
-    if (Notification.permission === "denied") {
-      await Notification.requestPermission().then((permission) => {
+  sendNotification = (message, chat) => {
+    if (document.hidden) {
+      const notification = new Notification(`New messagge from ${chat.name}`, {
+        body: `${message}`,
+      });
+      notification.onclick = () =>
+        window.focus(`http://localhost:3001/chats/${chat._id}`);
+    }
+  };
+
+  notifyUser = (message, chat) => {
+    if (!("Notification" in window)) {
+      alert("This browser does not support system notifications!");
+    } else if (Notification.permission === "granted") {
+      this.sendNotification(message, chat);
+    } else if (Notification.permission !== "denied") {
+      Notification.requestPermission((permission) => {
         if (permission === "granted") {
-          const notification = new Notification("Permission granted");
+          this.sendNotification(message, chat);
         }
       });
-    } else if (Notification.permission === "granted") {
-      const notification = new Notification(notificationText);
     }
   };
 
