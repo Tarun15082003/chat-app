@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 class UserItem extends Component {
   render() {
-    const { data: item, users } = this.props;
+    const { data: item, users, users_logged_in } = this.props;
     return (
       <div className="row \-md-auto">
         <div className="col-md-auto">
@@ -14,6 +14,13 @@ class UserItem extends Component {
         </div>
         <div className="col-md-auto">{item.name}</div>
         <div className="col-md-auto" style={{ marginRight: "5px" }}>
+          <button
+            className="btn btn-secondary"
+            onClick={() => this.props.onRequest(item)}
+            disabled={users_logged_in[item._id] === undefined ? true : false}
+          >
+            Request
+          </button>
           <button
             className="btn btn-primary"
             onClick={() => this.props.onClick(users[item._id], item)}
