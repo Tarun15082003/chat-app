@@ -1,15 +1,22 @@
+import _ from "lodash";
 import io from "socket.io-client";
 import React, { Component, useEffect } from "react";
 import SearchBox from "./searchbox";
 import Profile from "./profile";
 import Logout from "./logout";
 import Chatslist from "./chatslist";
-import { getChats, getChat, updateMessages } from "../services/ChatService";
+import {
+  getChats,
+  getChat,
+  updateMessages,
+  addNewChat,
+} from "../services/ChatService";
 import ChatScreen from "./chatScreen";
 import UserScreen from "./userprofile";
 import AddChatScreen from "./addchatscreen";
 import * as authService from "../services/authService";
-import { logout } from "./../services/authService";
+import * as userService from "../services/userService";
+import { filter } from "lodash";
 
 class HomeScreen extends Component {
   state = {
@@ -57,6 +64,7 @@ class HomeScreen extends Component {
 
     const id = this.props.match.params.id;
     const { data: chats } = await getChats(user._id);
+    const { data: users } = await userService.getUsers();
     let old_messages = [];
     let currentChat;
     if (id !== "home") {
@@ -65,7 +73,7 @@ class HomeScreen extends Component {
       currentChat = chat;
       this.socket.emit("joinRoom", id);
     }
-    this.setState({ chats, id, old_messages, user, currentChat });
+    this.setState({ chats, id, old_messages, user, currentChat, users });
   }
 
   handleLogout = () => {
@@ -89,6 +97,22 @@ class HomeScreen extends Component {
   handleaddchatscreen = () => {
     const addchatscreen = 1;
     this.setState({ addchatscreen });
+  };
+
+  handleaddnewchat = async (event, data) => {
+    event.preventDefault();
+    let users = [];
+    for (let i = 0; i < data.users.length; i++) {
+      users.push(data.users[i]._id);
+    }
+    const body = {
+      isGroupChat: data.isGroupChat,
+      chatName: data.chatName,
+      old_messages: [],
+      users,
+    };
+    await addNewChat(body);
+    this.props.history.replace("/");
   };
 
   handlebackbutton = (bit) => {
@@ -156,6 +180,13 @@ class HomeScreen extends Component {
         message: current_message.message,
       });
     });
+    const chats = [...this.state.chats];
+    const indexToMove = chats.findIndex(
+      (chat) => chat._id === this.state.currentChat._id
+    );
+    const movedChat = chats.splice(indexToMove, 1)[0];
+    chats.unshift(movedChat);
+    this.setState({ chats });
   };
 
   handleKeyDown = async (event) => {
@@ -180,6 +211,13 @@ class HomeScreen extends Component {
           message: current_message.message,
         });
       });
+      const chats = [...this.state.chats];
+      const indexToMove = chats.findIndex(
+        (chat) => chat._id === this.state.currentChat._id
+      );
+      const movedChat = chats.splice(indexToMove, 1)[0];
+      chats.unshift(movedChat);
+      this.setState({ chats });
     }
   };
 
@@ -216,6 +254,7 @@ class HomeScreen extends Component {
           .startsWith(this.state.searchQuery.toLowerCase())
       );
     }
+
     return { data: filtered };
   };
 
@@ -252,7 +291,12 @@ class HomeScreen extends Component {
             </div>
           ) : (
             <div className="col-3 clearfix chat-col-1">
-              <AddChatScreen handlebackbutton={this.handlebackbutton} />
+              <AddChatScreen
+                handlebackbutton={this.handlebackbutton}
+                users={this.state.users}
+                onSubmit={this.handleaddnewchat}
+                current_user={this.state.user}
+              />
             </div>
           )}
           <div className="col clearfix chat-col-2">
