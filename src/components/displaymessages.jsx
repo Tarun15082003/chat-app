@@ -74,7 +74,7 @@ const DisplayMessages = ({ old_messages, user }) => {
             message={item.message}
             isSender={item.isSender}
             timestamp={item.timestamp.slice(item.timestamp.search(" ") + 1)}
-            key={item.message}
+            key={`${item.message}+${item.isSender}+${item.timestamp}`}
             user={user}
           />
         ))}

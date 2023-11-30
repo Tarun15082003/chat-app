@@ -15,8 +15,9 @@ class UserItem extends Component {
         <div className="col-md-auto">{item.name}</div>
         <div className="col-md-auto" style={{ marginRight: "5px" }}>
           <button
-            className="btn btn-secondary"
+            className="btn"
             onClick={() => this.props.onRequest(item)}
+            style={{ marginRight: "2px" }}
             disabled={users_logged_in[item._id] === undefined ? true : false}
           >
             Request

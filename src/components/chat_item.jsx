@@ -27,7 +27,8 @@ class ChatItem extends Component {
               fontStyle: "italic",
             }}
           >
-            {item.old_messages[item.old_messages.length - 1].message}
+            {item.old_messages.length > 0 &&
+              item.old_messages[item.old_messages.length - 1].message}
           </div>
         </div>
       </div>
