@@ -1,7 +1,13 @@
 import React from "react";
 
-const ChatMessage = ({ message, isSender, timestamp, user }) => {
+const ChatMessage = ({ message, isSender, timestamp, user, users }) => {
   const issender = isSender === user._id;
+  let name;
+  if (issender) name = "You";
+  else {
+    const other_user = users.find((u) => u._id === isSender);
+    name = other_user.name;
+  }
   return (
     <div
       className={`chat-message ${issender === true ? "sender" : "receiver"}`}
@@ -22,6 +28,7 @@ const ChatMessage = ({ message, isSender, timestamp, user }) => {
             issender ? "sender-message" : "receiver-message"
           }`}
         >
+          <h6 style={{ fontSize: "0.7rem" }}>{name}</h6>
           {message}
         </div>
       </div>

@@ -2,14 +2,15 @@ import React, { Component } from "react";
 
 class ChatScreenItem extends Component {
   render() {
-    const { data: item, loggedInUsers, user } = this.props;
+    const { data: item, loggedInUsers, user, users } = this.props;
     let displaystate = null;
     if (item.users.length === 2 && loggedInUsers) {
       const { _id: userId } = item.users.find((u) => u._id !== user._id);
       if (Object.keys(loggedInUsers).includes(userId)) {
         displaystate = "User Online";
       } else {
-        displaystate = "User offline";
+        const { lastseen } = users.find((u) => u._id === userId);
+        displaystate = `Last seen on ${lastseen}`;
       }
     }
     return (
@@ -26,7 +27,7 @@ class ChatScreenItem extends Component {
           <div
             className="last-message"
             style={{
-              width: "100px",
+              width: "200px",
               overflowX: "auto",
               fontSize: "0.8rem",
               fontStyle: "italic",

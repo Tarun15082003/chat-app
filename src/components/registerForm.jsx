@@ -11,6 +11,7 @@ class RegisterForm extends Form {
       password: "",
       name: "",
       profileImage: require("../images/user_image.jpg"),
+      lastseen: "",
     },
     errors: {},
   };

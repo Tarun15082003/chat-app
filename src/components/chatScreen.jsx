@@ -14,13 +14,17 @@ class ChatScreen extends Component {
             <ChatScreenItem
               data={this.props.currentChat}
               loggedInUsers={this.props.loggedInUsers}
+              users={this.props.users}
               user={this.props.user}
             />
           </div>
           <div className="col-2 col-md-auto">
             <div className="row">
               <VideoButton data={this.props.currentChat} />
-              <MoreButton />
+              <MoreButton
+                data={this.props.currentChat}
+                old_messages={this.props.old_messages}
+              />
             </div>
           </div>
         </div>
@@ -28,6 +32,7 @@ class ChatScreen extends Component {
           <DisplayMessages
             old_messages={this.props.old_messages}
             user={this.props.user}
+            users={this.props.users}
           />
         </div>
         <div className="row chat-col-1-row-3">
