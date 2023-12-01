@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import ChatMessage from "./chatmessage";
 
-const DisplayMessages = ({ old_messages, user }) => {
+const DisplayMessages = ({ old_messages, user, users }) => {
   const divRef = useRef(null);
 
   useEffect(() => {
@@ -38,6 +38,7 @@ const DisplayMessages = ({ old_messages, user }) => {
                 timestamp={item.timestamp.slice(item.timestamp.search(" ") + 1)}
                 key={`${item.message}+${item.isSender}+${item.timestamp}`}
                 user={user}
+                users={users}
               />
             ))}
           </div>
@@ -76,6 +77,7 @@ const DisplayMessages = ({ old_messages, user }) => {
             timestamp={item.timestamp.slice(item.timestamp.search(" ") + 1)}
             key={`${item.message}+${item.isSender}+${item.timestamp}`}
             user={user}
+            users={users}
           />
         ))}
       </div>

@@ -1,6 +1,6 @@
 import _ from "lodash";
 import io from "socket.io-client";
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import SearchBox from "./searchbox";
 import Profile from "./profile";
 import Logout from "./logout";
@@ -16,7 +16,6 @@ import UserScreen from "./userprofile";
 import AddChatScreen from "./addchatscreen";
 import * as authService from "../services/authService";
 import * as userService from "../services/userService";
-import { filter } from "lodash";
 
 class HomeScreen extends Component {
   state = {
@@ -46,12 +45,16 @@ class HomeScreen extends Component {
       }
     });
 
-    this.socket.on("loggedInUsers", (data) => {
+    this.socket.on("loggedInUsers", async (data) => {
       this.setState({ loggedInUsers: data });
+      const { data: users } = await userService.getUsers();
+      this.setState({ users });
     });
 
-    this.socket.on("newMessageReceived", ({ message, chat }) => {
+    this.socket.on("newMessageReceived", async ({ message, chat }) => {
       this.notifyUser(message, chat);
+      const { data: chats } = await getChats(user._id);
+      this.setState({ chats });
     });
 
     this.socket.on("RequestingVideoCall", ({ current_user, chatId }) => {
@@ -76,13 +79,22 @@ class HomeScreen extends Component {
     this.setState({ chats, id, old_messages, user, currentChat, users });
   }
 
-  handleLogout = () => {
+  handleLogout = async () => {
     const logout = () => {
       return new Promise((resolve) => {
         this.socket.emit("logout", { userId: this.state.user._id });
         resolve();
       });
     };
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const day = currentDate.getDate();
+    const hours = currentDate.getHours();
+    const minutes = currentDate.getMinutes();
+    const seconds = currentDate.getSeconds();
+    const lastseen = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    await userService.updateUser(this.state.user._id, { lastseen });
     logout().then(() => {
       authService.logout();
       window.location = "/";
@@ -148,15 +160,12 @@ class HomeScreen extends Component {
       old_messages,
       displaybit,
       currentChat,
+      message: "",
     });
   };
 
   handleMessage = (message) => {
     this.setState({ message });
-  };
-
-  handleAddChat = () => {
-    const chats = [...this.state.chats];
   };
 
   handleSubmit = async () => {
@@ -171,22 +180,17 @@ class HomeScreen extends Component {
     const current_message = {
       message: this.state.message,
       isSender: this.state.user._id,
-      timestamp: `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`,
+      timestamp: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
     };
-    updateMessages(this.state.id, current_message).then(() => {
+    updateMessages(this.state.id, current_message).then(async () => {
       this.socket.emit("messageSent", {
         chat: this.state.currentChat,
         user: this.state.user,
         message: current_message.message,
       });
+      const { data: chats } = await getChats(this.state.user._id);
+      this.setState({ chats });
     });
-    const chats = [...this.state.chats];
-    const indexToMove = chats.findIndex(
-      (chat) => chat._id === this.state.currentChat._id
-    );
-    const movedChat = chats.splice(indexToMove, 1)[0];
-    chats.unshift(movedChat);
-    this.setState({ chats });
   };
 
   handleKeyDown = async (event) => {
@@ -202,30 +206,28 @@ class HomeScreen extends Component {
       const current_message = {
         message: this.state.message,
         isSender: this.state.user._id,
-        timestamp: `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`,
+        timestamp: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
       };
-      updateMessages(this.state.id, current_message).then(() => {
+      updateMessages(this.state.id, current_message).then(async () => {
         this.socket.emit("messageSent", {
           chat: this.state.currentChat,
           user: this.state.user,
           message: current_message.message,
         });
       });
-      const chats = [...this.state.chats];
-      const indexToMove = chats.findIndex(
-        (chat) => chat._id === this.state.currentChat._id
-      );
-      const movedChat = chats.splice(indexToMove, 1)[0];
-      chats.unshift(movedChat);
+      const { data: chats } = await getChats(this.state.user._id);
       this.setState({ chats });
     }
   };
 
   sendNotification = (message, chat) => {
     if (document.hidden) {
-      const notification = new Notification(`New messagge from ${chat.name}`, {
-        body: `${message}`,
-      });
+      const notification = new Notification(
+        `New message from ${chat.chatName}`,
+        {
+          body: `${message}`,
+        }
+      );
       notification.onclick = () =>
         window.focus(`http://localhost:3001/chats/${chat._id}`);
     }
@@ -255,7 +257,19 @@ class HomeScreen extends Component {
       );
     }
 
-    return { data: filtered };
+    const getLastMessageDate = (chat) => {
+      if (chat.old_messages.length === 0) return new Date(0);
+      const lastMessage = _.last(chat.old_messages);
+      return new Date(lastMessage.timestamp);
+    };
+
+    const chatsWithDate = filtered.map((chat) => ({
+      ...chat,
+      lastMessageDate: getLastMessageDate(chat),
+    }));
+
+    const sortedChats = _.orderBy(chatsWithDate, ["lastMessageDate"], ["desc"]);
+    return { data: sortedChats };
   };
 
   render() {
@@ -315,6 +329,7 @@ class HomeScreen extends Component {
                 currentChat={this.state.currentChat}
                 user={this.state.user}
                 loggedInUsers={this.state.loggedInUsers}
+                users={this.state.users}
               />
             )}
           </div>
