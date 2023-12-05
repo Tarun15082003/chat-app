@@ -71,13 +71,24 @@ class HomeScreen extends Component {
     let old_messages = [];
     let currentChat;
     if (id !== "home") {
-      const { data: chat } = await getChat(id);
-      old_messages = chat.old_messages;
-      currentChat = chat;
-      this.socket.emit("joinRoom", id);
+      try {
+        const { data: chat } = await getChat(id);
+        old_messages = chat.old_messages;
+        currentChat = chat;
+        this.socket.emit("joinRoom", id);
+      } catch (error) {
+        console.log(error);
+      }
     }
     this.setState({ chats, id, old_messages, user, currentChat, users });
   }
+
+  handleUpdateUser = async (data) => {
+    // await userService.updateUserProfile(this.state.user._id, {
+    //   name: data.Username,
+    //   profileImage: data.profilePicture,
+    // });
+  };
 
   handleLogout = async () => {
     const logout = () => {
@@ -181,6 +192,7 @@ class HomeScreen extends Component {
       message: this.state.message,
       isSender: this.state.user._id,
       timestamp: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+      typeofMessage: "text",
     };
     updateMessages(this.state.id, current_message).then(async () => {
       this.socket.emit("messageSent", {
@@ -207,6 +219,7 @@ class HomeScreen extends Component {
         message: this.state.message,
         isSender: this.state.user._id,
         timestamp: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+        typeofMessage: "text",
       };
       updateMessages(this.state.id, current_message).then(async () => {
         this.socket.emit("messageSent", {
@@ -288,7 +301,10 @@ class HomeScreen extends Component {
                 }}
               >
                 <div className="profile">
-                  <Profile handleDisplayBit={this.handleDisplayBit} />
+                  <Profile
+                    handleDisplayBit={this.handleDisplayBit}
+                    user={this.state.user}
+                  />
                 </div>
                 <div className="logout">
                   <Logout onClick={this.handleLogout} />
@@ -318,6 +334,7 @@ class HomeScreen extends Component {
               <UserScreen
                 handlebackbutton={this.handlebackbutton}
                 user={this.state.user}
+                onUpdate={this.handleUpdateUser}
               />
             ) : this.state.id === "home" ? null : (
               <ChatScreen

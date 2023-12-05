@@ -36,6 +36,7 @@ const DisplayMessages = ({ old_messages, user, users }) => {
                 message={item.message}
                 isSender={item.isSender}
                 timestamp={item.timestamp.slice(item.timestamp.search(" ") + 1)}
+                typeofMessage={item.typeofMessage}
                 key={`${item.message}+${item.isSender}+${item.timestamp}`}
                 user={user}
                 users={users}
@@ -75,6 +76,7 @@ const DisplayMessages = ({ old_messages, user, users }) => {
             message={item.message}
             isSender={item.isSender}
             timestamp={item.timestamp.slice(item.timestamp.search(" ") + 1)}
+            typeofMessage={item.typeofMessage}
             key={`${item.message}+${item.isSender}+${item.timestamp}`}
             user={user}
             users={users}

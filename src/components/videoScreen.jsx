@@ -163,7 +163,6 @@ class VideoScreen extends Component {
     const {
       stream,
       users,
-      yourID,
       callAccepted,
       receivingCall,
       caller,

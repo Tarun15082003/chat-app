@@ -1,6 +1,14 @@
 import React from "react";
+import avatar from "../images/user_image.jpg";
 
-const ChatMessage = ({ message, isSender, timestamp, user, users }) => {
+const ChatMessage = ({
+  message,
+  isSender,
+  timestamp,
+  user,
+  users,
+  typeofMessage,
+}) => {
   const issender = isSender === user._id;
   let name;
   if (issender) name = "You";
@@ -23,14 +31,16 @@ const ChatMessage = ({ message, isSender, timestamp, user, users }) => {
         </div>
       )}
       <div className="message-container">
-        <div
-          className={`message ${
-            issender ? "sender-message" : "receiver-message"
-          }`}
-        >
-          <h6 style={{ fontSize: "0.7rem" }}>{name}</h6>
-          {message}
-        </div>
+        {typeofMessage === "text" ? (
+          <div
+            className={`message ${
+              issender ? "sender-message" : "receiver-message"
+            }`}
+          >
+            <h6 style={{ fontSize: "0.7rem" }}>{name}</h6>
+            {message}
+          </div>
+        ) : null}
       </div>
       {issender && (
         <div className="col-md-auto text-center">

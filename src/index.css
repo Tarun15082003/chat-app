@@ -223,6 +223,14 @@ code {
   position: relative;
 }
 
+.userscreen-profile-photo-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  position: relative;
+}
+
 .bootstrap-switch-container {
   width: 48px;
 }
