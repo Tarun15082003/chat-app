@@ -2,24 +2,29 @@ import React, { Component } from "react";
 
 class AttachButton extends Component {
   state = {};
+  handleFileChange = (e) => {
+    const selectedFiles = e.target.files;
+  };
   render() {
     return (
       <div className="input-group-prepend dropdown">
-        <button
-          className="btn dropdown-toggle"
-          type="button"
-          data-toggle="dropdown"
-          aria-expanded="false"
-        >
-          <i className="fa fa-paperclip" aria-hidden="true"></i>
-        </button>
-        <ul className="dropdown-menu">
-          <li>
-            <a className="dropdown-item" href="#">
-              Attach picture
-            </a>
-          </li>
-        </ul>
+        <label htmlFor="file-upload" className="custom-file-upload">
+          <i
+            className="fa fa-paperclip btn"
+            aria-hidden="true"
+            style={{ paddingTop: "10px" }}
+          ></i>
+        </label>
+        <input
+          type="file"
+          label="file"
+          multiple
+          id="file-upload"
+          style={{ display: "none" }}
+          onChange={(e) => {
+            this.handleFileChange(e);
+          }}
+        />
       </div>
     );
   }

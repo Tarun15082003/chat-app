@@ -24,13 +24,15 @@ class AddChatScreen extends Form {
   }
 
   schema = {
-    isGroupChat: Joi.boolean().required().label("Group Chat"),
+    isGroupChat: Joi.boolean().label("Group Chat"),
     chatName: Joi.string().required().label("Chat Name"),
     users: Joi.label("Users"),
   };
 
   handleClick = (item) => {
     const users = [...this.state.data.users, item];
+    if (!this.state.data.isGroupChat)
+      this.setState({ data: { chatName: item.name } });
     this.setState((prevState) => ({
       data: {
         ...prevState.data,
@@ -73,12 +75,29 @@ class AddChatScreen extends Form {
         <h3>Add a new chat</h3>
         <form>
           {this.renderToogle("isGroupChat", "Group Chat")}
-          {this.renderInput("chatName", "Chat Name")}
+          <div className="form-goup m-2">
+            <label htmlFor={"chatName"}>{"Chat Name"}</label>
+            <input
+              value={this.state.data["chatName"]}
+              onChange={this.handleChange}
+              id={"chatName"}
+              name={"chatName"}
+              type="text"
+              className="form-control"
+              readOnly={!this.state.data.isGroupChat}
+            />
+            {this.state.errors["chatName"] && (
+              <div className="alert alert-danger">
+                {this.state.errors["chatName"]}
+              </div>
+            )}
+          </div>
           <div className="input-group m-2">
             <input
               className="dropdown-toggle"
               data-toggle="dropdown"
-              aria-expanded="false"
+              value={`${this.state.data.users.length} users added`}
+              readOnly
             />
             <ul className="dropdown-menu">
               {data.users.map((item) => (
@@ -117,6 +136,10 @@ class AddChatScreen extends Form {
                 type="button"
                 data-toggle="dropdown"
                 aria-expanded="false"
+                disabled={
+                  !this.state.data.isGroupChat &&
+                  this.state.data.users.length >= 2
+                }
               >
                 <i className="fa fa-plus" aria-hidden="true"></i>
               </button>

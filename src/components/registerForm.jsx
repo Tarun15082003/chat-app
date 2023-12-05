@@ -20,7 +20,8 @@ class RegisterForm extends Form {
     email: Joi.string().required().email().label("Email"),
     password: Joi.string().min(5).required().label("Password"),
     name: Joi.string().required().label("Name"),
-    profileImage: Joi.binary(),
+    profileImage: Joi.binary().label("Image"),
+    lastseen: Joi.label("Lastseen"),
   };
 
   doSubmit = async () => {
@@ -55,3 +56,16 @@ class RegisterForm extends Form {
 }
 
 export default RegisterForm;
+
+function convertToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const filereader = new FileReader();
+    filereader.readAsDataURL(file);
+    filereader.onload = () => {
+      resolve(filereader.result);
+    };
+    filereader.onerror = (error) => {
+      reject(error);
+    };
+  });
+}
