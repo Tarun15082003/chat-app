@@ -15,15 +15,21 @@ class ChatScreenItem extends Component {
     }
     return (
       <div className="row" style={{ marginTop: "2px" }}>
-        <div className="col-1">
-          <img
-            className="chat-screen-chat-proifle-image"
-            src="https://bootdey.com/img/Content/avatar/avatar1.png"
-            alt="avatar"
-          />
-        </div>
+        {!item.isGroupChat && (
+          <div className="col-1">
+            <img
+              className="chat-screen-chat-proifle-image"
+              src={`http://localhost:3000/api/profileImages/${
+                item.users.find((u) => u._id !== user._id).profileImage
+              }`}
+              alt="avatar"
+            />
+          </div>
+        )}
         <div className="col" style={{ paddingLeft: "20px", paddingTop: "5px" }}>
-          {item.chatName}
+          {item.isGroupChat === false
+            ? item.users.find((u) => u._id !== user._id).name
+            : item.chatName}
           <div
             className="last-message"
             style={{

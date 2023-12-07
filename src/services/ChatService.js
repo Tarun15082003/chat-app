@@ -15,8 +15,23 @@ export function getMessages(id) {
   return http.get(apiEndpoint + "/messages/" + id);
 }
 
-export function updateMessages(id, body) {
-  return http.put(apiEndpoint + "/messages/" + id, body);
+export function updateMessages(id, body, file) {
+  if (file === null) {
+    return http.put(apiEndpoint + "/messages/" + id, body);
+  } else {
+    const formData = new FormData();
+    Object.keys(body).forEach((key) => {
+      formData.append(key, body[key]);
+    });
+
+    formData.append("mediamessage", file);
+
+    return http.put(apiEndpoint + "/messages/" + id, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 }
 
 export function addNewChat(body) {

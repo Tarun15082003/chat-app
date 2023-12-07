@@ -16,7 +16,12 @@ class Chatslist extends Component {
               key={item._id}
               style={{ color: "black", textDecoration: "none" }}
             >
-              <ChatItem data={item} onClick={onClick} key={item._id} />
+              <ChatItem
+                data={item}
+                onClick={onClick}
+                key={item._id}
+                user={this.props.user}
+              />
             </Link>
           ))
         )}
