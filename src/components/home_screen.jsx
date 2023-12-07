@@ -16,6 +16,7 @@ import UserScreen from "./userprofile";
 import AddChatScreen from "./addchatscreen";
 import * as authService from "../services/authService";
 import * as userService from "../services/userService";
+import { toast } from "react-toastify";
 
 class HomeScreen extends Component {
   state = {
@@ -84,10 +85,23 @@ class HomeScreen extends Component {
   }
 
   handleUpdateUser = async (data) => {
-    // await userService.updateUserProfile(this.state.user._id, {
-    //   name: data.Username,
-    //   profileImage: data.profilePicture,
-    // });
+    let name = data.Username;
+    if (name === null) name = this.state.user.name;
+    const result = await userService.updateUserProfile(
+      this.state.user._id,
+      {
+        name: name,
+      },
+      data.file
+    );
+    localStorage.removeItem("token");
+    localStorage.setItem("token", result.data);
+    const updatedUser = authService.getCurrentUser();
+    console.log(updatedUser);
+    this.setState({ user: updatedUser });
+    toast.success(
+      "Update success. Your changes will be visible to other users after some time."
+    );
   };
 
   handleLogout = async () => {
@@ -179,7 +193,7 @@ class HomeScreen extends Component {
     this.setState({ message });
   };
 
-  handleSubmit = async () => {
+  handleSubmit = async (file) => {
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
@@ -188,13 +202,14 @@ class HomeScreen extends Component {
     const minutes = currentDate.getMinutes();
     const seconds = currentDate.getSeconds();
 
+    const type = file === null ? "text" : "media";
     const current_message = {
       message: this.state.message,
       isSender: this.state.user._id,
       timestamp: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
-      typeofMessage: "text",
+      typeofMessage: type,
     };
-    updateMessages(this.state.id, current_message).then(async () => {
+    updateMessages(this.state.id, current_message, file).then(async () => {
       this.socket.emit("messageSent", {
         chat: this.state.currentChat,
         user: this.state.user,
@@ -205,7 +220,7 @@ class HomeScreen extends Component {
     });
   };
 
-  handleKeyDown = async (event) => {
+  handleKeyDown = async (event, file) => {
     if (event.key === "Enter") {
       const currentDate = new Date();
       const year = currentDate.getFullYear();
@@ -215,13 +230,14 @@ class HomeScreen extends Component {
       const minutes = currentDate.getMinutes();
       const seconds = currentDate.getSeconds();
 
+      const type = file === null ? "text" : "media";
       const current_message = {
         message: this.state.message,
         isSender: this.state.user._id,
         timestamp: `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
-        typeofMessage: "text",
+        typeofMessage: type,
       };
-      updateMessages(this.state.id, current_message).then(async () => {
+      updateMessages(this.state.id, current_message, file).then(async () => {
         this.socket.emit("messageSent", {
           chat: this.state.currentChat,
           user: this.state.user,
@@ -316,7 +332,11 @@ class HomeScreen extends Component {
                 onClick={this.handleaddchatscreen}
               />
               <div className="row">
-                <Chatslist items={data} onClick={this.handleChatitemClick} />
+                <Chatslist
+                  items={data}
+                  onClick={this.handleChatitemClick}
+                  user={this.state.user}
+                />
               </div>
             </div>
           ) : (
@@ -330,13 +350,14 @@ class HomeScreen extends Component {
             </div>
           )}
           <div className="col clearfix chat-col-2">
-            {this.state.displaybit === 1 ? (
+            {this.state.displaybit === 1 && (
               <UserScreen
                 handlebackbutton={this.handlebackbutton}
                 user={this.state.user}
                 onUpdate={this.handleUpdateUser}
               />
-            ) : this.state.id === "home" ? null : (
+            )}
+            {this.state.displaybit !== 1 && this.state.id !== "home" && (
               <ChatScreen
                 message={this.state.message}
                 handleMessage={this.handleMessage}

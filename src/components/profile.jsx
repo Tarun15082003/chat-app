@@ -5,11 +5,14 @@ class Profile extends Component {
   state = {};
   render() {
     let user = this.props.user;
+    let avatarSrc = user
+      ? `http://localhost:3000/api/profileImages/${user.profileImage}`
+      : avatar;
     return (
       <div className="row" style={{ alignContent: "baseline" }}>
         <img
           className="userscreen-profile-photo-small"
-          src={avatar}
+          src={avatarSrc}
           alt="Profile"
           style={{ marginLeft: "15px", cursor: "pointer" }}
           onClick={this.props.handleDisplayBit}

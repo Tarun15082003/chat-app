@@ -33,6 +33,7 @@ class ChatScreen extends Component {
             old_messages={this.props.old_messages}
             user={this.props.user}
             users={this.props.users}
+            data={this.props.currentChat}
           />
         </div>
         <div className="row chat-col-1-row-3">

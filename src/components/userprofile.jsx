@@ -7,13 +7,24 @@ class UserScreen extends Component {
     profilePicture: null,
     Username: null,
     Email: null,
+    file: null,
   };
 
   componentDidMount() {
     const Username = this.props.user.name;
     const Email = this.props.user.email;
     const profilePicture = this.props.user.profileImage;
-    this.setState({ Username, Email });
+    this.setState({ Username, Email, profilePicture });
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.user !== this.props.user) {
+      this.setState({
+        Username: this.props.user.Username,
+        Email: this.props.user.Email,
+        profilePicture: this.props.user.profileImage,
+      });
+    }
   }
 
   handleChange = (Username) => {
@@ -22,8 +33,7 @@ class UserScreen extends Component {
 
   handleImageChange = async (e) => {
     const file = e.target.files[0];
-    const base64 = await convertToBase64(file);
-    this.setState({ profilePicture: base64 });
+    this.setState({ file });
   };
 
   handleUpdate = () => {
@@ -32,7 +42,7 @@ class UserScreen extends Component {
   };
 
   render() {
-    const { profilePicture } = this.state;
+    const profilePicture = this.state.profilePicture;
     return (
       <div>
         <div
@@ -56,10 +66,10 @@ class UserScreen extends Component {
           style={{ marginTop: "30px", marginBottom: "30px" }}
         >
           <div className="row">
-            <label htmlFor="image-upload" className="custom-file-upload">
+            <label htmlFor="image-upload">
               <img
                 className="userscreen-profile-photo"
-                src={profilePicture || avatar}
+                src={`http://localhost:3000/api/profileImages/${profilePicture}`}
                 alt="Profile"
               />
             </label>

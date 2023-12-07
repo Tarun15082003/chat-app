@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 class ChatItem extends Component {
   render() {
-    const { data: item, onClick } = this.props;
+    const { data: item, onClick, user } = this.props;
     return (
       <div
         className="row profile-box"
@@ -10,14 +10,23 @@ class ChatItem extends Component {
         style={{ cursor: "pointer" }}
       >
         <div className="col-md-auto">
-          <img
-            className="profile-image"
-            src="https://bootdey.com/img/Content/avatar/avatar1.png"
-            alt="avatar"
-          />
+          {item.isGroupChat === false ? (
+            <img
+              className="profile-image"
+              src={`http://localhost:3000/api/profileImages/${
+                item.users.find((u) => u._id !== user._id).profileImage
+              }`}
+              alt="avatar"
+            />
+          ) : (
+            <h4 style={{ marginLeft: "15px" }}>GC</h4>
+          )}
         </div>
+
         <div className="col-md-auto">
-          {item.chatName}
+          {item.isGroupChat === false
+            ? item.users.find((u) => u._id !== user._id).name
+            : item.chatName}
           <div
             className="last-message"
             style={{

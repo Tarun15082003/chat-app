@@ -3,7 +3,8 @@ import React, { Component } from "react";
 class AttachButton extends Component {
   state = {};
   handleFileChange = (e) => {
-    const selectedFiles = e.target.files;
+    const selectedFiles = e.target.files[0];
+    this.props.handlefiles(selectedFiles);
   };
   render() {
     return (
