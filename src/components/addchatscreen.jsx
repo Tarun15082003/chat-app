@@ -106,7 +106,7 @@ class AddChatScreen extends Form {
                     <div className="col-md-auto">
                       <img
                         className="profile-image"
-                        src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                        src={`http://localhost:3000/api/profileImages/${item.profileImage}`}
                         alt="avatar"
                       />
                     </div>
@@ -155,7 +155,7 @@ class AddChatScreen extends Form {
                           <div className="col-md-auto">
                             <img
                               className="profile-image"
-                              src="https://bootdey.com/img/Content/avatar/avatar1.png"
+                              src={`http://localhost:3000/api/profileImages/${item.profileImage}`}
                               alt="avatar"
                             />
                           </div>
