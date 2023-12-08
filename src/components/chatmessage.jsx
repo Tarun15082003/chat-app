@@ -78,26 +78,64 @@ const ChatMessage = ({
           contentType !== null && (
             <div>
               {contentType.startsWith("image/") && (
-                <img
-                  src={mediaUrl}
-                  alt="media"
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
-                />
+                <div
+                  className={`message ${
+                    issender ? "sender-message" : "receiver-message"
+                  } column`}
+                >
+                  <img
+                    src={mediaUrl}
+                    alt="media"
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  />
+                  <div>
+                    <a
+                      href={mediaUrl}
+                      download
+                      style={{ color: issender ? "white" : "light-blue" }}
+                    >
+                      Download File
+                    </a>
+                  </div>
+                </div>
               )}
               {contentType.startsWith("video/") && (
-                <video
-                  controls
-                  style={{ maxWidth: "100%", maxHeight: "200px" }}
+                <div
+                  className={`message ${
+                    issender ? "sender-message" : "receiver-message"
+                  } column`}
                 >
-                  <source src={mediaUrl} type={contentType} />
-                  Your browser does not support the video tag.
-                </video>
+                  <video
+                    controls
+                    style={{ maxWidth: "100%", maxHeight: "200px" }}
+                  >
+                    <source src={mediaUrl} type={contentType} />
+                    {/* Your browser does not support the video tag. */}
+                  </video>
+                  <div>
+                    <a
+                      href={mediaUrl}
+                      download
+                      style={{ color: issender ? "white" : "light-blue" }}
+                    >
+                      Download File
+                    </a>
+                  </div>
+                </div>
               )}
               {!contentType.startsWith("image/") &&
                 !contentType.startsWith("video/") && (
-                  <div>
-                    <p>{`${contentType} type file`}</p>
-                    <a href={mediaUrl} download>
+                  <div
+                    className={`message ${
+                      issender ? "sender-message" : "receiver-message"
+                    } column`}
+                  >
+                    <p>{`${contentType.split("/")[0]} type file`}</p>
+                    <a
+                      href={mediaUrl}
+                      download
+                      style={{ color: issender ? "white" : "light-blue" }}
+                    >
                       Download File
                     </a>
                   </div>

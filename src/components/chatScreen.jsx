@@ -24,6 +24,9 @@ class ChatScreen extends Component {
               <MoreButton
                 data={this.props.currentChat}
                 old_messages={this.props.old_messages}
+                all_users={this.props.users}
+                current_user={this.props.user}
+                currentChat={this.props.currentChat}
               />
             </div>
           </div>
